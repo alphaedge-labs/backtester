@@ -45,6 +45,13 @@ mongo_client = AsyncMongoDBClient(db_name=MONGO_DB)
 async def init_db():
     global db
     db = await mongo_client.get_database()
+    await create_indexes()
+
+async def create_indexes():
+    await db['users'].create_index("email", unique=True)
+    await db['subscriptions'].create_index("user_id")
+    await db['payments'].create_index("user_id")
+    await db['payments'].create_index("razorpay_payment_id", unique=True)
 
 # Initializing db needs to be done in an async context
 db = None

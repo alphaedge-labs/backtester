@@ -12,7 +12,7 @@ router = APIRouter()
 
 # You'll need to set these environment variables
 
-@router.post("/auth/google")
+@router.post("/auth")
 async def google_auth(request: Request):
     try:
         # Get the token from request body

@@ -4,7 +4,11 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from utils.logging import logger
 from utils.datetime import get_ist_time
+
 from routes.auth import router as auth_router
+from routes.razorpay import router as razorpay_router
+from routes.google import router as google_router
+
 from database.mongodb import init_db
 from settings.env import PORT
 
@@ -15,6 +19,10 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down services...")
 
 app = FastAPI(lifespan=lifespan, debug=True)
+
+app.include_router(auth_router, prefix="/api/v1/auth")
+app.include_router(razorpay_router, prefix="/api/v1/razorpay")
+app.include_router(google_router, prefix="/api/v1/google")
 
 @app.get("/health")
 def health_check():

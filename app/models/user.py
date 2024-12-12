@@ -15,6 +15,8 @@ class UserLogin(BaseModel):
 
 class User(UserBase):
     id: str
+    active_subscription_id: Optional[str] = None
+    subscription_status: Optional[str] = None
     
     class Config:
         from_attributes = True
@@ -22,6 +24,8 @@ class User(UserBase):
 class UserInDB(UserBase):
     id: str
     hashed_password: str
+    active_subscription_id: Optional[str] = None
+    subscription_status: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
