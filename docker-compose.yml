@@ -1,0 +1,45 @@
+services:
+    alphaedge__backtester:
+        profiles: ["backtester"]
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: alphaedge__backtester
+        image: alphaedge__backtester:latest
+        ports:
+            - "${PORT}:${PORT}"
+        env_file:
+            - .env
+        volumes:
+            - .:/app
+        restart: on-failure
+        networks:
+            - alphaedge__network
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    "curl -f --fail-on-error --silent --head http://localhost:${PORT}/health || exit 1",
+                ]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 60s
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "3"
+        deploy:
+            resources:
+                limits:
+                    cpus: "1" # Use half of the available CPU
+                    memory: 1024M # Limit memory to 1024 MB (1 GB)
+                reservations:
+                    cpus: "0.5" # Reserve 50% of the available CPU
+                    memory: 512M # Reserve 512 MB memory
+
+networks:
+    alphaedge__network:
+        driver: bridge
+        external: true
